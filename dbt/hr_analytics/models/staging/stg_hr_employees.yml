@@ -1,0 +1,50 @@
+version: 2
+
+models:
+  - name: stg_hr_employees
+    description: >
+      One clean row per employee from the latest HR export.
+      Cleaning rules: docs/cleaning_rules.md. Each test below proves one rule.
+    columns:
+      - name: emp_id
+        description: Employee ID from the HR system (business key).
+        data_tests: [unique, not_null]                                   # R13
+      - name: first_name
+        data_tests: [not_null]                                           # R04
+      - name: last_name
+        data_tests: [not_null]                                           # R04
+      - name: gender
+        data_tests:
+          - accepted_values: {arguments: {values: [Female, Male]}}       # R02
+      - name: is_hispanic_latino
+        data_tests: [not_null]                                           # R03
+      - name: birth_date
+        data_tests: [not_null]                                           # R06
+      - name: hire_date
+        data_tests: [not_null]                                           # R05
+      - name: state_code
+        data_tests:
+          - relationships: {arguments: {to: ref('us_states'), field: state_code}}
+      - name: department_name
+        data_tests: [not_null]
+      - name: position_title
+        data_tests: [not_null]
+      - name: manager_name
+        data_tests: [not_null]                                           # R11
+      - name: recruitment_source
+        data_tests:
+          - not_null
+          - relationships: {arguments: {to: ref('recruitment_source_channels'), field: recruitment_source}}
+      - name: term_reason
+        data_tests:                                                      # R08
+          - relationships: {arguments: {to: ref('term_reason_categories'), field: term_reason}}
+      - name: termination_type
+        data_tests:
+          - accepted_values: {arguments: {values: [Voluntary, Involuntary]}}  # R10
+      - name: performance_score
+        data_tests:
+          - accepted_values: {arguments: {values: [Exceeds, Fully Meets, Needs Improvement, PIP]}}
+      - name: performance_rank
+        data_tests: [not_null]
+      - name: salary
+        data_tests: [not_null]

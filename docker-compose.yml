@@ -33,6 +33,9 @@ services:
       WAREHOUSE_DB: ${WAREHOUSE_DB:-hr}
       WAREHOUSE_USER: ${WAREHOUSE_USER:-hr}
       WAREHOUSE_PASSWORD: ${WAREHOUSE_PASSWORD:-hr}
+      # so that plain "dbt build" works from the project root
+      DBT_PROJECT_DIR: /app/dbt/hr_analytics
+      DBT_PROFILES_DIR: /app/dbt/hr_analytics
     volumes:
       - .:/app          # your project folder, shared live with the container
     working_dir: /app

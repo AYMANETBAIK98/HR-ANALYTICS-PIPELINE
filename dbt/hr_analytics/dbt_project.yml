@@ -1,0 +1,34 @@
+name: hr_analytics
+version: "1.0.0"
+profile: hr_analytics
+
+model-paths: ["models"]
+test-paths: ["tests"]
+macro-paths: ["macros"]
+# the reference CSVs live with the other data files; dbt loads them as "seeds"
+seed-paths: ["../../data/reference"]
+
+clean-targets: ["target", "dbt_packages"]
+
+vars:
+  # the source data is a snapshot taken on this day (see docs/data_model.md)
+  as_of_date: "2019-02-28"
+
+models:
+  hr_analytics:
+    staging:
+      +schema: staging
+      +materialized: view     # always up to date, nothing stored twice
+    marts:
+      +schema: marts
+      +materialized: table    # stored, so Power BI reads it fast
+
+seeds:
+  hr_analytics:
+    +schema: reference
+    term_reason_categories:
+      +column_types: {term_reason: text, term_reason_category: text}
+    recruitment_source_channels:
+      +column_types: {recruitment_source: text, recruitment_channel: text}
+    us_states:
+      +column_types: {state_code: text, state_name: text, census_region: text}

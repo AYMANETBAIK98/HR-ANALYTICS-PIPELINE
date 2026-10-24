@@ -56,7 +56,8 @@ cd HR-ANALYTICS-PIPELINE
 docker compose up -d                                       # start the warehouse
 docker compose run --rm tools python scripts/check_setup.py   # check everything is ready
 docker compose run --rm tools python -m ingestion.load_raw     # load data/landing/*.csv into raw
-docker compose run --rm tools pytest -v                        # run the tests
+docker compose run --rm tools dbt build                        # seeds + models + data tests
+docker compose run --rm tools pytest -v                        # run the Python tests
 ```
 
 Warehouse connection (DBeaver, Power BI): host `localhost`, port `5434`, database `hr`, user `hr`, password `hr`.

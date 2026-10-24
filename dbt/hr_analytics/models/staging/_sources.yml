@@ -1,0 +1,9 @@
+version: 2
+
+sources:
+  - name: raw
+    description: Files loaded as-is by ingestion/load_raw.py (step 3). Every column is TEXT.
+    schema: raw
+    tables:
+      - name: hr_employees
+        description: One row per employee per loaded HR export, values exactly as in the file.
