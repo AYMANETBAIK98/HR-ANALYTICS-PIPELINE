@@ -29,7 +29,7 @@ Airflow orchestrates ①②③ · everything runs in Docker
 - [x] **1. Data discovery:** [profiling report](docs/profiling_report.md) (22 issues) and [cleaning rules](docs/cleaning_rules.md)
 - [x] **2. Data modeling:** [star schema and data dictionary](docs/data_model.md), reference files
 - [x] **3. Extract + Load:** idempotent ingestion into `raw` (schema check, all-or-nothing, 8 tests)
-- [ ] **4. Transform:** dbt staging + marts + tests
+- [x] **4. Transform:** dbt staging + 7 dimensions + 2 facts, 91 data tests (incl. reconciliation with the source)
 - [ ] **5. Orchestration:** Airflow DAG
 - [ ] **6. Power BI:** 4-page dashboard
 - [ ] **7. Documentation and demo**

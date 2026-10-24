@@ -83,7 +83,7 @@ A real HR system would provide change history, handled with a *slowly changing d
 | Table | Grain | Rows (expected) |
 |---|---|---|
 | `fact_employment` | one employee | 311 |
-| `fact_headcount_monthly` | one employee × one month-end while employed (up to 2019-02-28) | ~18,000 |
+| `fact_headcount_monthly` | one employee × one month employed (Jan 2006 to Feb 2019) | 18,207 |
 | `dim_employee` | one employee | 311 |
 | `dim_department` | one department | 6 |
 | `dim_position` | one job title (32 in the source, 31 after trimming: "Data Analyst" vs "Data Analyst ") | 31 |

@@ -1,0 +1,52 @@
+version: 2
+
+models:
+  - name: fact_employment
+    description: One row per employee, with keys to every dimension and the HR measures.
+    columns:
+      - name: employee_key
+        data_tests:
+          - unique
+          - not_null
+          - relationships: {arguments: {to: ref('dim_employee'), field: employee_key}}
+      - name: department_key
+        data_tests:
+          - not_null
+          - relationships: {arguments: {to: ref('dim_department'), field: department_key}}
+      - name: position_key
+        data_tests:
+          - not_null
+          - relationships: {arguments: {to: ref('dim_position'), field: position_key}}
+      - name: manager_key
+        data_tests:
+          - not_null
+          - relationships: {arguments: {to: ref('dim_manager'), field: manager_key}}
+      - name: recruitment_source_key
+        data_tests:
+          - not_null
+          - relationships: {arguments: {to: ref('dim_recruitment_source'), field: recruitment_source_key}}
+      - name: term_reason_key
+        data_tests:
+          - not_null
+          - relationships: {arguments: {to: ref('dim_term_reason'), field: term_reason_key}}
+      - name: hire_date_key
+        data_tests:
+          - not_null
+          - relationships: {arguments: {to: ref('dim_date'), field: date_key}}
+      - name: termination_date_key
+        data_tests:
+          - relationships: {arguments: {to: ref('dim_date'), field: date_key}}
+      - name: tenure_days
+        data_tests: [not_null]
+
+  - name: fact_headcount_monthly
+    description: One row per employee per month employed. Headcount = rows where is_active_at_month_end.
+    columns:
+      - name: month_end_date_key
+        data_tests:
+          - not_null
+          - relationships: {arguments: {to: ref('dim_date'), field: date_key}}
+      - name: employee_key
+        data_tests:
+          - not_null
+          - relationships: {arguments: {to: ref('dim_employee'), field: employee_key}}
