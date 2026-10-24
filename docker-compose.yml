@@ -1,0 +1,42 @@
+# HR Analytics Pipeline - local stack
+#   warehouse : PostgreSQL 16, the data warehouse (localhost:5434)
+#               port 5434 so it can run next to the weather project (5433)
+#   tools     : Python + dbt toolbox, used to run the pipeline steps
+#               (no Python install needed on your PC)
+#               usage: docker compose run --rm tools <command>
+services:
+  warehouse:
+    image: postgres:16
+    container_name: hr_warehouse
+    environment:
+      POSTGRES_DB: ${WAREHOUSE_DB:-hr}
+      POSTGRES_USER: ${WAREHOUSE_USER:-hr}
+      POSTGRES_PASSWORD: ${WAREHOUSE_PASSWORD:-hr}
+    ports:
+      - "5434:5432"
+    volumes:
+      - hr-warehouse-data:/var/lib/postgresql/data
+      - ./sql/init:/docker-entrypoint-initdb.d   # runs once, on first start
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${WAREHOUSE_USER:-hr} -d ${WAREHOUSE_DB:-hr}"]
+      interval: 5s
+      retries: 10
+
+  tools:
+    build: .
+    depends_on:
+      warehouse:
+        condition: service_healthy
+    environment:
+      WAREHOUSE_HOST: warehouse
+      WAREHOUSE_PORT: 5432
+      WAREHOUSE_DB: ${WAREHOUSE_DB:-hr}
+      WAREHOUSE_USER: ${WAREHOUSE_USER:-hr}
+      WAREHOUSE_PASSWORD: ${WAREHOUSE_PASSWORD:-hr}
+    volumes:
+      - .:/app          # your project folder, shared live with the container
+    working_dir: /app
+    profiles: ["tools"] # not started by "up"; run on demand
+
+volumes:
+  hr-warehouse-data:

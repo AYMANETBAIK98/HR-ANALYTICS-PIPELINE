@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+.env
+# dbt build output
+dbt/**/target/
+dbt/**/dbt_packages/
+dbt/**/logs/
+logs/
+# Power BI temp files (keep the .pbix itself)
+powerbi/*.pbix.bak
+~$*
