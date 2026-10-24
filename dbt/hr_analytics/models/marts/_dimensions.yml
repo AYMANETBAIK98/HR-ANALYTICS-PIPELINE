@@ -1,0 +1,68 @@
+version: 2
+
+models:
+  - name: dim_department
+    description: One row per department.
+    columns:
+      - name: department_key
+        data_tests: [unique, not_null]
+      - name: department_name
+        data_tests: [unique, not_null]
+
+  - name: dim_position
+    description: One row per job title.
+    columns:
+      - name: position_key
+        data_tests: [unique, not_null]
+      - name: position_title
+        data_tests: [unique, not_null]
+
+  - name: dim_manager
+    description: One row per manager (identified by name).
+    columns:
+      - name: manager_key
+        data_tests: [unique, not_null]
+      - name: manager_name
+        data_tests: [unique, not_null]
+
+  - name: dim_recruitment_source
+    description: One row per recruitment source, with its channel.
+    columns:
+      - name: recruitment_source_key
+        data_tests: [unique, not_null]
+      - name: recruitment_channel
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [Job board, Social network, Search engine, Company website, Referral, Event, Other]
+
+  - name: dim_term_reason
+    description: One row per termination reason, plus key -1 = Not applicable (still employed).
+    columns:
+      - name: term_reason_key
+        data_tests: [unique, not_null]
+      - name: term_reason
+        data_tests: [unique, not_null]
+      - name: term_reason_category
+        data_tests: [not_null]
+
+  - name: dim_employee
+    description: One row per employee, descriptive attributes.
+    columns:
+      - name: employee_key
+        data_tests: [unique, not_null]
+      - name: emp_id
+        data_tests: [unique, not_null]
+      - name: state_name
+        data_tests: [not_null]
+      - name: census_region
+        data_tests:
+          - accepted_values: {arguments: {values: [Northeast, Midwest, South, West]}}
+
+  - name: dim_date
+    description: Calendar, one row per day 2006-01-01 to 2019-12-31.
+    columns:
+      - name: date_key
+        data_tests: [unique, not_null]
+      - name: full_date
+        data_tests: [unique, not_null]

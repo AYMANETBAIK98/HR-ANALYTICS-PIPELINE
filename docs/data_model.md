@@ -86,7 +86,7 @@ A real HR system would provide change history, handled with a *slowly changing d
 | `fact_headcount_monthly` | one employee × one month-end while employed (up to 2019-02-28) | ~18,000 |
 | `dim_employee` | one employee | 311 |
 | `dim_department` | one department | 6 |
-| `dim_position` | one job title | 32 |
+| `dim_position` | one job title (32 in the source, 31 after trimming: "Data Analyst" vs "Data Analyst ") | 31 |
 | `dim_manager` | one manager | 21 |
 | `dim_recruitment_source` | one recruitment source | 9 |
 | `dim_term_reason` | one termination reason + "Not applicable" | 18 |
