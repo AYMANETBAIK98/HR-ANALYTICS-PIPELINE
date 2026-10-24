@@ -28,7 +28,7 @@ Airflow orchestrates ①②③ · everything runs in Docker
 - [x] **0. Setup:** repo structure, Dockerised PostgreSQL warehouse, toolbox container
 - [x] **1. Data discovery:** [profiling report](docs/profiling_report.md) (22 issues) and [cleaning rules](docs/cleaning_rules.md)
 - [x] **2. Data modeling:** [star schema and data dictionary](docs/data_model.md), reference files
-- [ ] **3. Extract + Load:** idempotent ingestion into `raw`
+- [x] **3. Extract + Load:** idempotent ingestion into `raw` (schema check, all-or-nothing, 8 tests)
 - [ ] **4. Transform:** dbt staging + marts + tests
 - [ ] **5. Orchestration:** Airflow DAG
 - [ ] **6. Power BI:** 4-page dashboard
@@ -55,6 +55,8 @@ git clone https://github.com/AYMANETBAIK98/HR-ANALYTICS-PIPELINE.git
 cd HR-ANALYTICS-PIPELINE
 docker compose up -d                                       # start the warehouse
 docker compose run --rm tools python scripts/check_setup.py   # check everything is ready
+docker compose run --rm tools python -m ingestion.load_raw     # load data/landing/*.csv into raw
+docker compose run --rm tools pytest -v                        # run the tests
 ```
 
 Warehouse connection (DBeaver, Power BI): host `localhost`, port `5434`, database `hr`, user `hr`, password `hr`.
