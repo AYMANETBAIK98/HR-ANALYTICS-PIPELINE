@@ -11,3 +11,4 @@ logs/
 # Power BI temp files (keep the .pbix itself)
 powerbi/*.pbix.bak
 ~$*
+dbt/**/.user.yml
