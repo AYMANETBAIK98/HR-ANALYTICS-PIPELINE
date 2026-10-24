@@ -30,7 +30,7 @@ Airflow orchestrates ①②③ · everything runs in Docker
 - [x] **2. Data modeling:** [star schema and data dictionary](docs/data_model.md), reference files
 - [x] **3. Extract + Load:** idempotent ingestion into `raw` (schema check, all-or-nothing, 8 tests)
 - [x] **4. Transform:** dbt staging + 7 dimensions + 2 facts, 91 data tests (incl. reconciliation with the source)
-- [ ] **5. Orchestration:** Airflow DAG
+- [x] **5. Orchestration:** monthly Airflow DAG with a quality gate (bad data never reaches the marts)
 - [ ] **6. Power BI:** 4-page dashboard
 - [ ] **7. Documentation and demo**
 
@@ -59,6 +59,18 @@ docker compose run --rm tools python -m ingestion.load_raw     # load data/landi
 docker compose run --rm tools dbt build                        # seeds + models + data tests
 docker compose run --rm tools pytest -v                        # run the Python tests
 ```
+
+### Run it with Airflow
+```bash
+docker compose --profile airflow up -d --build     # first time: ~5 min to build the image
+```
+Open **http://localhost:8081** (use a private window if your browser translates pages), click **hr_pipeline** → **Trigger**.
+
+```
+check_landing → ingest_raw → new_data_or_forced? → dbt_seed → dbt_build_staging → dbt_build_marts → summary
+```
+- No new file since the last run → the dbt tasks are **skipped** (trigger with `force_rebuild = true` to rebuild anyway).
+- A cleaning test fails in `dbt_build_staging` → `dbt_build_marts` does **not** run: Power BI keeps the last good data.
 
 Warehouse connection (DBeaver, Power BI): host `localhost`, port `5434`, database `hr`, user `hr`, password `hr`.
 

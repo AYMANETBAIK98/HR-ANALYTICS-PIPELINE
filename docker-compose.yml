@@ -41,5 +41,57 @@ services:
     working_dir: /app
     profiles: ["tools"] # not started by "up"; run on demand
 
+  # ---------------------------------------------------------------- Airflow (step 5)
+  # Started only on demand:  docker compose --profile airflow up -d --build
+  # UI on http://localhost:8081  (8081, so it can run next to the weather project on 8080)
+  airflow-db:
+    image: postgres:16
+    container_name: hr_airflow_db
+    environment:
+      POSTGRES_DB: airflow
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+    volumes:
+      - hr-airflow-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U airflow -d airflow"]
+      interval: 5s
+      retries: 10
+    profiles: ["airflow"]
+
+  airflow:
+    build:
+      context: .
+      dockerfile: Dockerfile.airflow
+    container_name: hr_airflow
+    command: airflow standalone
+    depends_on:
+      warehouse:
+        condition: service_healthy
+      airflow-db:
+        condition: service_healthy
+    environment:
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@airflow-db:5432/airflow
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__CORE__LOAD_EXAMPLES: "False"
+      AIRFLOW__CORE__DAGS_FOLDER: /opt/airflow/project/dags
+      AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: "False"
+      # local demo only: no login screen. Never do this in production.
+      AIRFLOW__CORE__SIMPLE_AUTH_MANAGER_ALL_ADMINS: "True"
+      WAREHOUSE_HOST: warehouse
+      WAREHOUSE_PORT: 5432
+      WAREHOUSE_DB: ${WAREHOUSE_DB:-hr}
+      WAREHOUSE_USER: ${WAREHOUSE_USER:-hr}
+      WAREHOUSE_PASSWORD: ${WAREHOUSE_PASSWORD:-hr}
+      DBT_PROJECT_DIR: /opt/airflow/project/dbt/hr_analytics
+      DBT_PROFILES_DIR: /opt/airflow/project/dbt/hr_analytics
+      PYTHONPATH: /opt/airflow/project
+    ports:
+      - "8081:8080"
+    volumes:
+      - .:/opt/airflow/project    # the whole project, shared live with Airflow
+    profiles: ["airflow"]
+
 volumes:
   hr-warehouse-data:
+  hr-airflow-db-data:

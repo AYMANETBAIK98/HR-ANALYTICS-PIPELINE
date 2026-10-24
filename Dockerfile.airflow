@@ -1,0 +1,10 @@
+# Airflow image for the HR pipeline
+FROM apache/airflow:3.1.8-python3.11
+
+# Libraries the ingestion step imports (inside Airflow's own Python)
+RUN pip install --no-cache-dir pandas==2.2.3 psycopg2-binary==2.9.10
+
+# dbt in a SEPARATE virtual environment: dbt and Airflow both depend on many libraries,
+# and installing them side by side can break one of them. The DAG calls /opt/dbt-venv/bin/dbt.
+RUN python -m venv /opt/dbt-venv \
+ && /opt/dbt-venv/bin/pip install --no-cache-dir dbt-core==1.11.16 dbt-postgres==1.11.0
