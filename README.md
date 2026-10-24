@@ -26,7 +26,7 @@ Airflow orchestrates ①②③ · everything runs in Docker
 
 ## Roadmap
 - [x] **0. Setup:** repo structure, Dockerised PostgreSQL warehouse, toolbox container
-- [ ] **1. Data discovery:** profiling report and data quality issues
+- [x] **1. Data discovery:** [profiling report](docs/profiling_report.md) (22 issues) and [cleaning rules](docs/cleaning_rules.md)
 - [ ] **2. Data modeling:** star schema and data dictionary
 - [ ] **3. Extract + Load:** idempotent ingestion into `raw`
 - [ ] **4. Transform:** dbt staging + marts + tests
