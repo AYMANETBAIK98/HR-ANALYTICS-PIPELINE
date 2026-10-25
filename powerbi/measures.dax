@@ -1,0 +1,112 @@
+// =====================================================================
+// HR Analytics - DAX measures
+// Create them in a dedicated table: Home > Enter data > name it "_Measures" > Load,
+// then select the table and click "New measure" for each block below.
+// Expected values (checked against the warehouse in SQL) are in the comments.
+// =====================================================================
+
+
+// ---------------------------------------------------------------------
+// 1. TIME-BASED measures  ->  fact_headcount_monthly (active link to dim_date)
+//    They follow the date slicer.
+// ---------------------------------------------------------------------
+
+// Employees present on the LAST month-end of the selected period.
+// Expected: 2015 = 229 | 2018 = 207 | Feb 2019 = 207
+Headcount =
+VAR LastMonthInContext = MAX ( fact_headcount_monthly[month_end_date_key] )
+RETURN
+    CALCULATE (
+        COUNTROWS ( fact_headcount_monthly ),
+        fact_headcount_monthly[is_active_at_month_end] = TRUE (),
+        fact_headcount_monthly[month_end_date_key] = LastMonthInContext
+    )
+
+// Expected: all years = 311 | 2011 = 83 | 2015 = 36
+Hires =
+CALCULATE (
+    COUNTROWS ( fact_headcount_monthly ),
+    fact_headcount_monthly[is_hire_month] = TRUE ()
+)
+
+// Expected: all years = 104 | 2015 = 23 | 2016 = 22
+Terminations =
+CALCULATE (
+    COUNTROWS ( fact_headcount_monthly ),
+    fact_headcount_monthly[is_termination_month] = TRUE ()
+)
+
+// Average of the monthly headcounts in the period (months without data are ignored)
+// Expected: 2015 = 238.6
+Average Headcount =
+AVERAGEX ( VALUES ( dim_date[year_month] ), [Headcount] )
+
+// The standard HR attrition formula: leavers / average headcount
+// Expected: 2015 = 9.6 % | 2016 = 9.9 % | 2017 = 3.6 %   (format as %)
+Attrition Rate =
+DIVIDE ( [Terminations], [Average Headcount] )
+
+
+// ---------------------------------------------------------------------
+// 2. SNAPSHOT measures  ->  fact_employment (one row per employee)
+//    Its links to dim_date are INACTIVE, so the date slicer does not change them.
+// ---------------------------------------------------------------------
+
+// Expected: 311
+Employees = COUNTROWS ( fact_employment )
+
+// Expected: 207
+Active Employees =
+CALCULATE ( COUNTROWS ( fact_employment ), fact_employment[is_terminated] = FALSE () )
+
+// Expected: 104
+Leavers =
+CALCULATE ( COUNTROWS ( fact_employment ), fact_employment[is_terminated] = TRUE () )
+
+// Expected: 33.4 % overall | Production = 39.7 %   (format as %)
+% Left = DIVIDE ( [Leavers], [Employees] )
+
+// Expected: 66.6 % overall | Employee Referral = 83.9 % | Google Search = 38.8 %
+Retention Rate = DIVIDE ( [Active Employees], [Employees] )
+
+// Share of leavers who resigned (vs. were dismissed). Expected: 84.6 %  (88 / 104)
+Voluntary Share =
+DIVIDE ( CALCULATE ( [Leavers], fact_employment[termination_type] = "Voluntary" ), [Leavers] )
+
+// Expected: 69,021
+Avg Salary = AVERAGE ( fact_employment[salary] )
+
+// Expected: 4.82
+Avg Tenure (Years) = DIVIDE ( AVERAGE ( fact_employment[tenure_days] ), 365.25 )
+
+// Expected: 4.11 (scale 1-5)
+Avg Engagement = AVERAGE ( fact_employment[engagement_score] )
+
+Avg Satisfaction = AVERAGE ( fact_employment[satisfaction_score] )
+
+// 4 = Exceeds, 3 = Fully Meets, 2 = Needs Improvement, 1 = PIP
+Avg Performance = AVERAGE ( fact_employment[performance_rank] )
+
+// Expected: 10.2
+Avg Absences = AVERAGE ( fact_employment[absences] )
+
+
+// ---------------------------------------------------------------------
+// 3. ROLE-PLAYING DATES  ->  switch on an inactive relationship on demand
+// ---------------------------------------------------------------------
+
+// Leavers counted on their termination date (lets you split termination reasons by year)
+// Expected: 2015 = 23
+Leavers by Termination Date =
+CALCULATE (
+    [Leavers],
+    USERELATIONSHIP ( fact_employment[termination_date_key], dim_date[date_key] )
+)
+
+// Employees counted on their hire date (e.g. hires per recruitment source per year)
+// Expected: 2011 = 83
+Hires by Hire Date =
+CALCULATE (
+    [Employees],
+    USERELATIONSHIP ( fact_employment[hire_date_key], dim_date[date_key] )
+)
