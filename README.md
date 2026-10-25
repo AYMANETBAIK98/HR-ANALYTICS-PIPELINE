@@ -72,6 +72,9 @@ check_landing → ingest_raw → new_data_or_forced? → dbt_seed → dbt_build_
 - No new file since the last run → the dbt tasks are **skipped** (trigger with `force_rebuild = true` to rebuild anyway).
 - A cleaning test fails in `dbt_build_staging` → `dbt_build_marts` does **not** run: Power BI keeps the last good data.
 
+![Airflow run: 7 tasks successful](docs/images/airflow_run_success.png)
+*A forced run (`force_rebuild = true`) in Airflow 3: all 7 tasks succeeded in 29 s.*
+
 Warehouse connection (DBeaver, Power BI): host `localhost`, port `5434`, database `hr`, user `hr`, password `hr`.
 
 ## Data
