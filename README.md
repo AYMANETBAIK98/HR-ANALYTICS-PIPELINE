@@ -5,6 +5,9 @@
 
 🚧 **Work in progress.** Built step by step; see the roadmap below.
 
+![Power BI - Overview page](docs/images/powerbi_overview.png)
+*Power BI Overview page, built on the `marts` star schema (in progress: 1 of 4 pages).*
+
 ## Business questions
 - How many employees do we have, and how has headcount changed over time?
 - Who leaves, why, and from which department or manager?
