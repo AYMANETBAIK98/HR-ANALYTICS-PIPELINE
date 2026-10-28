@@ -11,6 +11,9 @@
 ![Power BI - Attrition page](docs/images/powerbi_attrition.png)
 *Attrition page: reasons (grouped via a dbt seed), % left by department and manager, leavers per year (USERELATIONSHIP on the termination date).*
 
+![Power BI - Recruitment page](docs/images/powerbi_recruitment.png)
+*Recruitment page: referrals keep 83.9 % of hires with the best performance; Google Search, the main channel of the 2011 hiring wave, keeps only 38.8 %.*
+
 ## Business questions
 - How many employees do we have, and how has headcount changed over time?
 - Who leaves, why, and from which department or manager?
