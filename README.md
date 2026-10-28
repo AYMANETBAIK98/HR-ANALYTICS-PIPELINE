@@ -6,7 +6,10 @@
 🚧 **Work in progress.** Built step by step; see the roadmap below.
 
 ![Power BI - Overview page](docs/images/powerbi_overview.png)
-*Power BI Overview page, built on the `marts` star schema (in progress: 1 of 4 pages).*
+*Power BI Overview page, built on the `marts` star schema.*
+
+![Power BI - Attrition page](docs/images/powerbi_attrition.png)
+*Attrition page: reasons (grouped via a dbt seed), % left by department and manager, leavers per year (USERELATIONSHIP on the termination date).*
 
 ## Business questions
 - How many employees do we have, and how has headcount changed over time?
