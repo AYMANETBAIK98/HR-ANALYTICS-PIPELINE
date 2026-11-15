@@ -13,6 +13,15 @@
 
 ![Overview page](docs/screenshots/01_overview.png)
 
+![Power BI - Overview page](docs/images/powerbi_overview.png)
+*Power BI Overview page, built on the `marts` star schema.*
+
+![Power BI - Attrition page](docs/images/powerbi_attrition.png)
+*Attrition page: reasons (grouped via a dbt seed), % left by department and manager, leavers per year (USERELATIONSHIP on the termination date).*
+
+![Power BI - Recruitment page](docs/images/powerbi_recruitment.png)
+*Recruitment page: referrals keep 83.9 % of hires with the best performance; Google Search, the main channel of the 2011 hiring wave, keeps only 38.8 %.*
+
 ## Business questions
 - How many employees do we have, and how has headcount changed over time?
 - Who leaves, why, and from which department or manager?
@@ -116,6 +125,9 @@ check_landing → ingest_raw → new_data_or_forced? → dbt_seed → dbt_build_
 ```
 - No new file since the last run → the dbt tasks are **skipped** (trigger with `force_rebuild = true` to rebuild anyway).
 - A cleaning test fails in `dbt_build_staging` → `dbt_build_marts` does **not** run: Power BI keeps the last good data.
+
+![Airflow run: 7 tasks successful](docs/images/airflow_run_success.png)
+*A forced run (`force_rebuild = true`) in Airflow 3: all 7 tasks succeeded in 29 s.*
 
 Warehouse connection (DBeaver, Power BI): host `localhost`, port `5434`, database `hr`, user `hr`, password `hr`.
 
