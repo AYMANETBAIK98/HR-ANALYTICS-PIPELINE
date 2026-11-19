@@ -9,7 +9,7 @@
 
 > End-to-end data pipeline: a raw HR system export goes through **Python ingestion**, **dbt transformations**
 > and a **PostgreSQL star schema**, and ends up in a **4-page Power BI dashboard**.
-> Orchestrated with **Airflow**, fully reproducible with **Docker**, protected by **91 data tests**.
+> Orchestrated with **Airflow**, fully reproducible with **Docker**, protected by **96 data tests**.
 
 ![Overview page](docs/screenshots/01_overview.png)
 
@@ -27,7 +27,7 @@ From the 311 employees in the dataset:
 | How many leave? | **104 employees (33%)** have left, and **85% of them left voluntarily**. |
 | Why? | **Career reasons** (another position, career change, more money elsewhere...) are the #1 category, about **1 leaver in 3**, followed by working conditions. |
 | Where? | **Production** loses about **40%** of its staff, against **16%** in Sales. |
-| Which source hires best? | **Employee referrals keep 84%** of their hires. Google Search keeps only 39% and the Diversity Job Fair 45%. |
+| Which source hires best? | Over the **same 3-year window** after hire, **employee referrals keep 93%** of their hires, LinkedIn 90%, Indeed 84%, and **Google Search only 71%**. ("Still employed today" said 84% vs 39%, but referral hires are more recent: median 2014 vs 2011, so they had less time to leave. The fixed window removes that bias: the gap is real, but closer to 22 points than 45.) |
 | Performance link? | **56%** of "Needs Improvement" employees left. Engagement falls from **4.5/5** (Exceeds) to **2.2/5** (PIP). |
 
 **Recommendation:** invest in the referral programme, and look at career paths and working conditions in Production first.
@@ -65,7 +65,7 @@ File: [`powerbi/HR_Dashboard.pbix`](powerbi/HR_Dashboard.pbix)
 - **Data profiling and cleaning:** [22 data issues found](docs/profiling_report.md), each with a documented [cleaning rule](docs/cleaning_rules.md).
 - **Dimensional modeling:** [star schema](docs/data_model.md) with 7 dimensions, 2 fact tables, surrogate keys and a generated calendar.
 - **Idempotent ingestion:** a file is loaded once only, with a schema check and all-or-nothing loading.
-- **Data quality:** 91 dbt tests, including a reconciliation of the facts with the source data.
+- **Data quality:** 96 dbt tests, including a reconciliation of the facts with the source data.
 - **Orchestration:** monthly Airflow DAG with a quality gate: bad data never reaches the marts, and Power BI keeps the last good data.
 - **Reproducibility:** the whole stack starts with one `docker compose` command, no local Python install needed.
 
@@ -74,7 +74,7 @@ File: [`powerbi/HR_Dashboard.pbix`](powerbi/HR_Dashboard.pbix)
 - [x] **1. Data discovery:** [profiling report](docs/profiling_report.md) (22 issues) and [cleaning rules](docs/cleaning_rules.md)
 - [x] **2. Data modeling:** [star schema and data dictionary](docs/data_model.md), reference files
 - [x] **3. Extract + Load:** idempotent ingestion into `raw` (schema check, all-or-nothing, 8 tests)
-- [x] **4. Transform:** dbt staging + 7 dimensions + 2 facts, 91 data tests (incl. reconciliation with the source)
+- [x] **4. Transform:** dbt staging + 7 dimensions + 2 facts + retention mart, 96 data tests (incl. reconciliation with the source)
 - [x] **5. Orchestration:** monthly Airflow DAG with a quality gate (bad data never reaches the marts)
 - [x] **6. Power BI:** 4-page dashboard + a checks page
 - [ ] **Next:** history of department and manager changes (slowly changing dimension type 2), cloud deployment

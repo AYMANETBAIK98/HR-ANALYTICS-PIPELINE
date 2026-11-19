@@ -50,3 +50,16 @@ models:
         data_tests:
           - not_null
           - relationships: {arguments: {to: ref('dim_employee'), field: employee_key}}
+
+  - name: mart_retention_by_source
+    description: >
+      Retention by recruitment source over a fixed window (1, 2, 3 years after hire).
+      Only hires old enough to be judged on the window count (eligible_hires).
+    columns:
+      - name: recruitment_source_key
+        data_tests:
+          - not_null
+          - relationships: {arguments: {to: ref('dim_recruitment_source'), field: recruitment_source_key}}
+      - name: horizon_years
+        data_tests:
+          - accepted_values: {arguments: {values: [1, 2, 3]}}
